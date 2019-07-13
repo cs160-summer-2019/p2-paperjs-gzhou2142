@@ -23,7 +23,7 @@
     }
     
     #color-palette {
-      width: 400px;
+      width: 250px;
       background-color: #f1f1f1;
       display: flex;
       flex-wrap: wrap;
@@ -33,8 +33,8 @@
     }
 
     .swatch {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       -moz-border-radius: 18px;
       -webkit-border-radius: 18px;
       border-radius: 18px;
@@ -178,9 +178,12 @@
   </style>
   <script type="text/javascript" canvas="canvas">
     window.onload = function() {
-      // 
+      var coloringHistoryPointer = -1;
+      // array to store coloring actions
       var coloringHistory = new Array();
-      // 
+      // array to store history of colorings at a specific location
+      // eg. at location with id=x its coloring history can be [red, blue, green]. 
+      // green being most recent.
       var IdHistory = new Array();
       var currentColor = "#F44336";
       var canvas = document.getElementById('myCanvas');
@@ -246,7 +249,9 @@
           if (hit) {   
             var action = new Action(hit.item.id, event.point, hit);
             insertColorToId(IdHistory, hit.item.id, currentColor);
+            coloringHistory = coloringHistory.slice(0, coloringHistoryPointer + 1);
             coloringHistory.push(action);
+            coloringHistoryPointer += 1;
             hit.item.fillColor = cp.history[cp.history.length - 1];
           }
         }
@@ -259,19 +264,23 @@
         for (var i = colors.length - 1; i >= 0; i--) {
           var $swatch = $("<div>").css("background-color", colors[i])
             .addClass("swatch");
- 
+          
           $swatch.click(function() {
             // add color to the color palette history
             if (previous != null) {
               previous.style.border = "none";
             }
-            this.style.border = "solid thick #000000";
+            this.style.border = "solid 4px #000000";
             previous = this;
             currentColor = $(this).css("background-color");
             cp.history.push($(this).css("background-color"));
           });
           cp.$container.append($swatch);
+          var firstSwatch = $(".swatch")[0];
+          firstSwatch.style.border = "solid 4px #000000";
+          previous = firstSwatch;
         }
+        
       }
       // loads a set of colors from a json to create a color palette
       function getColorsCreatePalette() {
@@ -310,15 +319,37 @@
         init(true);
       }
       
+      // Redo the most recent action. 
       function redo(colorHistory, idHistory) {
-        
+        var redoAction;
+        if (coloringHistoryPointer + 2 > coloringHistory.length) {
+          return;
+        } else {
+          redoAction = colorHistory[coloringHistoryPointer + 1];
+          coloringHistoryPointer += 1;
+        }
+        var id = getId(idHistory, redoAction.id);
+        var nextColor;
+        if (id.current + 2 > id.colorHistory.length) {
+          return;
+        } else {
+          nextColor = id.colorHistory[id.current + 1];
+          id.current += 1;
+        }
+        if (redoAction.hit && nextColor) {
+          redoAction.hit.item.fillColor = nextColor;
+        }
       }
       
+      //undo the most recent action
       function undo(colorHistory, idHistory) {
-        var lastAction = colorHistory.pop();
-        if (lastAction == null) {
+        var lastAction;
+        if (coloringHistoryPointer >= 0) {
+          lastAction = colorHistory[coloringHistoryPointer];
+        } else {
           return;
         }
+
         var id = getId(idHistory, lastAction.id);
         var previousColor;
         if (id.current >= 1) {
@@ -327,9 +358,9 @@
         } else {
           return;
         }
-        id.colorHistory.pop();
         if (lastAction.hit && previousColor) {
           lastAction.hit.item.fillColor = previousColor;
+          coloringHistoryPointer -= 1;
         }
       }
       
@@ -337,9 +368,17 @@
         undo(coloringHistory, IdHistory);
       });
       
+      $("#redo").click(function() {
+        redo(coloringHistory, IdHistory);
+      })
     }
     
     
+    
+    
+    
+    
+    // insert Id objects with color into array. Makes sure id is unique.
     function insertColorToId(array, id, color) {
         var i;
         var found = false;
@@ -370,13 +409,17 @@
       return null;
     }
     
+    // Id object to represent each coloring spot on the coloring book. Also stores
+    // the history of colors for that specific location.
     function Id (id) {
       this.id = id;
       this.current = 0;
       this.colorHistory = new Array();
       this.colorHistory.push("rgb(255,255,255)");
     }
-        
+    
+    // Action object to represent an action done by the user. With the id of the location,
+    // the point object, and the HitResult being stored.
     function Action(id, point, hit) {
       this.id = id;
       this.point = point;
