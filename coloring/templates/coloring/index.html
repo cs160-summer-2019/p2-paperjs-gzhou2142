@@ -8,21 +8,62 @@
   <script type="text/javascript" src="{% static 'coloring/vendors/jquery/jquery-3.3.1.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'coloring/vendors/paper/paper-full.min.js' %}"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
   <style type="text/css">
-    #undo{
-      position:absolute;
-      bottom:10px;
-      left: 42%;
+    
+    
+    .palette-slider {
+      position: absolute;
+      display:block;
+      width:35px;
+      background-color: #f1f1f1;
+      height: 184px;
+      right: 250px;
+      bottom:0;
+      font-weight: 800;
+      padding-left: 6px;
+      padding-top: 60px;
+      font-size: 38px;
+      @include all-transition(0.3s);
+
     }
     
-    #redo{
+    .currentColor {
       position:absolute;
+      bottom: 10px;
+      left: 840px;
+      background-color: #F44336;
+      height: 60px;
+      width: 95px;
+      border-radius: 5px;
+    }
+    
+    #undo {
+      position: absolute;
+      bottom: 10px;
+      left: 505px;
+    }
+
+    #redo {
+      position: absolute;
+      bottom: 10px;
+      right: 545px;
+    }
+  
+    #eraser {
+      position: absolute;
       bottom:10px;
-      left:52%;
+      left: 613px;
+      width: 100px;
+    }
+    
+    #Capa_1 {
+      width: 50px;
+      height:40px;
+      fill:white;
     }
     
     #color-palette {
+
       width: 250px;
       background-color: #f1f1f1;
       display: flex;
@@ -46,135 +87,135 @@
       padding-right: 0;
       margin-left: auto;
       margin-right: auto;
-      margin-top:130px;
+      margin-top: 130px;
       display: block;
-      
     }
 
-    .wrapper {
-      display: flex;
-      align-items: stretch;
-    }
-
-    #sidebar {
-      border-radius: 25px;
-      min-width: 15%;
-      max-width: 15%;
-      min-height: 80vh;
-      position: absolute;
-      top: 10vh;
-    }
-
-    #sidebar.active {
-      margin-left: -14.5%;
-    }
-
-    a[data-toggle="collapse"] {
-      position: relative;
-    }
-
-    .dropdown-toggle::after {
-      display: block;
-      position: absolute;
+    @mixin vertical-align($position) {
+      position: $position;
       top: 50%;
-      right: 20px;
+      -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
       transform: translateY(-50%);
     }
 
-    @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-    #sidebarCollapse {
-      position: absolute;
-      top: 0%;
-      margin-top: 1%;
-      margin-left:1%;
+    @mixin all-transition($time) {
+      transition: all $time;
+      -webkit-transition: all $time;
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #fafafa;
+      margin: 0;
+      font-family: 'Muli', sans-serif;
     }
 
-    p {
-      font-family: 'Poppins', sans-serif;
-      font-size: 1.1em;
-      font-weight: 300;
-      line-height: 1.7em;
-      color: #999;
-    }
-
-    a,
-    a:hover,
-    a:focus {
-      color: inherit;
-      text-decoration: none;
+    .menu {
+      font-weight: 100;
+      background: #efefef;
+      width: 200px;
+      height: 100%;
+      position: fixed;
+      padding-right: 30px;
+      padding-left: 30px;
+      top: 0;
+      z-index: 100;
+      -webkit-box-shadow: -3px 0px 5px 0px rgba(0, 0, 0, 0.2);
+      box-shadow: -3px 0px 5px 0px rgba(0, 0, 0, 0.2);
+      left: -170px;
+      @include all-transition(0.3s);
+      color: #222;
       transition: all 0.3s;
     }
 
-    #sidebar {
-      /* don't forget to add all the previously mentioned styles here too */
-      background: #f1f1f1;
-      border-style: solid;
-      border-width: 1px;
-      border-color:black;
-      color: #fff;
-      transition: all 0.3s;
+    .title {
+      @include vertical-align(absolute);
+      position: absolute;
+      padding-top: 480px;
+      padding-right: 5px;
+      height: 100%;
+      right: 0px;
+      font-weight: 800;
+      font-size: 37px;
     }
 
-    #sidebar .sidebar-header {
-      border-radius: 50px;
-      padding: 20px;
-      background: #25347D;
-    }
-    
-    #alternating-first {
-      background: #f1f1f1;
-      color:black;
-      border-top: 1px solid black;
-      border-bottom: 1px solid black;
-    }
-    
-    #alternating-second{
-      background: #f1f1f1;
-      color:black;
-      border-top: 1px solid black;
-      border-bottom: 1px solid black;
+    .nav {
+      margin-top: 50px;
+      @include vertical-align(absolute);
+      font-weight: 100;
     }
 
-    #sidebar ul.components {
-      padding: 0 0;
-      transform: translateY(15%);
-      border-bottom: 1px solid #47748b;
+    .nav li {
+      margin: 20px;
+      width: 100%;
+      list-style-type: none;
     }
 
-    #sidebar ul p {
-      color: #fff;
-      padding: 10px;
-    }
-
-    #sidebar ul li a {
-      padding-top:3.5vh;
-      padding-bottom:3.5vh;
-      padding-left:30px;
-      font-size: 1.3vw;
+    .nav a {
       display: block;
+      text-decoration: none;
+      color: inherit;
+      @include all-transition(0.3s);
     }
 
-    #sidebar ul li a:hover {
-      color: #7386D5;
-      background: #fff;
+    .bottom-buttons {
+      color: #ffffff;
+      background-color: #611BBD;
+      border-color: #130269;
+      font-size:25px;
+      height: 60px;
+    }
+    
+    #eraser:hover,
+    #eraser:focus,
+    #eraser:active,
+    .open .dropdown-toggle.bottom-buttons {
+      color: #ffffff;
+      background-color: #000000 !important;
+      border-color: #130269;
+    }
+    
+    .bottom-buttons:hover,
+    .bottom-buttons:focus,
+    .bottom-buttons:active,
+    .bottom-buttons.active,
+    .open .dropdown-toggle.bottom-buttons {
+      color: #ffffff;
+      background-color: #49247A;
+      border-color: #130269;
+    }
+    
+    
+
+    .bottom-buttons:active,
+    .bottom-buttons.active,
+    .open .dropdown-toggle.bottom-buttons {
+      background-image: none;
     }
 
-    #sidebar ul li.active>a,
-    a[aria-expanded="true"] {
-      color: #fff;
-      background: #6d7fcc;
+    .bottom-buttons.disabled,
+    .bottom-buttons[disabled],
+    fieldset[disabled] .bottom-buttons,
+    .bottom-buttons.disabled:hover,
+    .bottom-buttons[disabled]:hover,
+    fieldset[disabled] .bottom-buttons:hover,
+    .bottom-buttons.disabled:focus,
+    .bottom-buttons[disabled]:focus,
+    fieldset[disabled] .bottom-buttons:focus,
+    .bottom-buttons.disabled:active,
+    .bottom-buttons[disabled]:active,
+    fieldset[disabled] .bottom-buttons:active,
+    .bottom-buttons.disabled.active,
+    .bottom-buttons[disabled].active,
+    fieldset[disabled] .bottom-buttons.active {
+      background-color: #611BBD;
+      border-color: #130269;
     }
 
-    ul ul a {
-      font-size: 0.9em !important;
-      padding-left: 30px !important;
-      background: #6d7fcc;
+    .bottom-buttons .badge {
+      color: #611BBD;
+      background-color: #ffffff;
     }
+
   </style>
   <script type="text/javascript" canvas="canvas">
     window.onload = function() {
@@ -246,7 +287,7 @@
             tolerance: 10,
             fill: true,
           });
-          if (hit) {   
+          if (hit) {
             var action = new Action(hit.item.id, event.point, hit);
             insertColorToId(IdHistory, hit.item.id, currentColor);
             coloringHistory = coloringHistory.slice(0, coloringHistoryPointer + 1);
@@ -259,12 +300,13 @@
       // create a color palette with the given colors
       var previous = null;
       var first = null;
+
       function createColorPalette(colors) {
         // create a swatch for each color
         for (var i = colors.length - 1; i >= 0; i--) {
           var $swatch = $("<div>").css("background-color", colors[i])
             .addClass("swatch");
-          
+
           $swatch.click(function() {
             // add color to the color palette history
             if (previous != null) {
@@ -274,13 +316,13 @@
             previous = this;
             currentColor = $(this).css("background-color");
             cp.history.push($(this).css("background-color"));
+            $(".currentColor").css("background-color", $(this).css("background-color"));
           });
           cp.$container.append($swatch);
           var firstSwatch = $(".swatch")[0];
           firstSwatch.style.border = "solid 4px #000000";
           previous = firstSwatch;
         }
-        
       }
       // loads a set of colors from a json to create a color palette
       function getColorsCreatePalette() {
@@ -318,7 +360,7 @@
       } else {
         init(true);
       }
-      
+
       // Redo the most recent action. 
       function redo(colorHistory, idHistory) {
         var redoAction;
@@ -340,7 +382,7 @@
           redoAction.hit.item.fillColor = nextColor;
         }
       }
-      
+
       //undo the most recent action
       function undo(colorHistory, idHistory) {
         var lastAction;
@@ -353,7 +395,7 @@
         var id = getId(idHistory, lastAction.id);
         var previousColor;
         if (id.current >= 1) {
-           previousColor = id.colorHistory[id.current - 1];
+          previousColor = id.colorHistory[id.current - 1];
           id.current -= 1;
         } else {
           return;
@@ -363,41 +405,82 @@
           coloringHistoryPointer -= 1;
         }
       }
-      
+
       $("#undo").click(function() {
         undo(coloringHistory, IdHistory);
       });
-      
+
       $("#redo").click(function() {
         redo(coloringHistory, IdHistory);
-      })
+      });
+      //left side menu slide in slide out button
+      var leftMenuBool = false;
+      $(".title").click(function() {
+        if (leftMenuBool == false) {
+          $(".menu").css("transform", "translate3d(170px, 0, 0)");
+          $(".title").text("<");
+          leftMenuBool = true;
+        } else {
+          $(".menu").css("transform", "translate3d(0, 0, 0)");
+          $(".title").text(">");
+          leftMenuBool = false;
+        }
+      });
+      
+      var rightPalette = false;
+      $(".palette-slider").click(function() {
+        if (rightPalette == false) {
+          $("#color-palette").hide();
+          $(".palette-slider").css("transform", "translate3d(250px, 0, 0)");
+          $(".palette-slider").text("<");
+          rightPalette = true;
+        } else {
+          $("#color-palette").show();
+          $(".palette-slider").css("transform", "translate3d(0, 0, 0)");
+          $(".palette-slider").text(">");
+          rightPalette = false;
+        }
+      });
+
+      
+      $("#pencil-side").css("filter","invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)");
+      //for highlighting side menu icons when clicked
+      $(".sidemenu-items").click(function() {
+        $(".sidemenu-items").css("filter", "invert(0%) sepia(0%) saturate(7500%) hue-rotate(24deg) brightness(93%) contrast(107%)");
+        $(this).css("filter", "invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)");
+      });
+      
+      $("#eraser").click(function() {
+        $(".swatch").css("border-style","none");
+        currentColor = "white";
+        cp.history.push("white");
+      });
+      
+
     }
-    
-    
-    
-    
-    
-    
+
+
+
     // insert Id objects with color into array. Makes sure id is unique.
     function insertColorToId(array, id, color) {
-        var i;
-        var found = false;
-        for (i = 0; i < array.length; i++) {
-          var curr = array[i];
-          if (curr.id == id) {
-            curr.colorHistory.push(color);
-            curr.current += 1;
-            found = true;
-          }
+      var i;
+      var found = false;
+      for (i = 0; i < array.length; i++) {
+        var curr = array[i];
+        if (curr.id == id) {
+          curr.colorHistory.push(color);
+          curr.current += 1;
+          found = true;
         }
+      }
       if (found == false) {
         var newId = new Id(id);
         newId.colorHistory.push(color);
-        newId.current+=1;
+        newId.current += 1;
         array.push(newId);
       }
     }
-    
+
     function getId(array, id) {
       var i;
       for (i = 0; i < array.length; i++) {
@@ -408,16 +491,16 @@
       }
       return null;
     }
-    
+
     // Id object to represent each coloring spot on the coloring book. Also stores
     // the history of colors for that specific location.
-    function Id (id) {
+    function Id(id) {
       this.id = id;
       this.current = 0;
       this.colorHistory = new Array();
       this.colorHistory.push("rgb(255,255,255)");
     }
-    
+
     // Action object to represent an action done by the user. With the id of the location,
     // the point object, and the HitResult being stored.
     function Action(id, point, hit) {
@@ -425,8 +508,8 @@
       this.point = point;
       this.hit = hit;
     }
-    
 
+  
     // Button to open left side bar
     $(document).ready(function() {
       $('#sidebarCollapse').on('click', function() {
@@ -439,41 +522,113 @@
 
 <body>
   <canvas id="myCanvas" width="750px" height="750px"></canvas>
-  <div id="color-palette"></div>
-  <div class="wrapper">
-    <!-- Sidebar -->
-    <nav id="sidebar">
-      
-      <ul class="list-unstyled components">
-        <li>
-          <a href="#" id = "alternating-first">Paint Brush</a>
-        </li>
-        <li>
-          <a href="#" id = "alternating-second">Pencil</a>
-        </li>
-        <li>
-          <a href="#" id = "alternating-first">Fountain Pen</a>
-        </li>
-        <li>
-          <a href="#"id = "alternating-second">Bucket Fill</a>
-        </li>
-        <li>
-          <a href="#" id = "alternating-first">Crayon</a>
-        </li>
-        <li>
-          <a href="#" id = "alternating-second">Marker</a>
-        </li>
-      </ul>
-    </nav>
+  <div id="color-palette">
+
   </div>
-  <button type="button" id="sidebarCollapse" class="btn btn-info  btn-primary btn-lg">
-               <i class="fas fa-align-left"></i>
-               <span>></span>
-               </button>
-    <button type="button" class="btn btn-primary" id="undo">Undo</button>
-    <button type="button" class="btn btn-primary" id="redo">Redo</button>
-
-
+  <div class="menu">
+    <div class="title">></div>
+    <ul class="nav">
+      <li>
+        <div class="sidemenu-items" id = "pencil-side">
+                  <svg width="100" height="100"
+                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                     <image xlink:href="../static/coloring/images/svg/pencil.svg" height="100" width="100"/>
+                  </svg>
+               </div>
+      </li>
+      <li>
+        <div class="sidemenu-items">
+                  <svg width="100" height="100"
+                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                     <image xlink:href="../static/coloring/images/svg/pen.svg" height="100" width="100"/>
+                  </svg>
+               </div>
+      </li>
+      <li>
+        <div class="sidemenu-items">
+                  <svg width="100" height="100"
+                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                     <image xlink:href="../static/coloring/images/svg/brush.svg" height="100" width="100"/>
+                  </svg>
+               </div>
+      </li>
+      <li>
+        <div href="#" class="sidemenu-items">
+                  <svg width="100" height="100"
+                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                     <image xlink:href="../static/coloring/images/crayon.svg" height="100" width="100"/>
+                  </svg>
+               </div>
+      </li>
+      <li>
+        <div class="sidemenu-items">
+                  <svg width="100" height="100"
+                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                     <image xlink:href="../static/coloring/images/svg/spray.svg" height="100" width="100"/>
+                  </svg>
+               </div>
+      </li>
+       <li>
+        <div class="sidemenu-items">
+                  <svg width="100" height="100"
+                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                     <image xlink:href="../static/coloring/images/svg/eraser.svg" height="100" width="100"/>
+                  </svg>
+               </div>
+      </li>
+    </ul>
+  </div>
+  <!--   <button type="button" id="sidebarCollapse" class="btn btn-info  btn-primary btn-lg">
+         <i class="fas fa-align-left"></i>
+         <span>></span>
+         </button> -->
+  <button type="button" class="btn btn-primary btn-lg bottom-buttons" id="undo">Undo</button>
+  <button type="button" class="btn btn-primary btn-lg bottom-buttons" id="eraser"><svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 455.975 455.975" style="enable-background:new 0 0 455.975 455.975;" xml:space="preserve">
+<g>
+	<polygon points="218.365,420.796 284.782,354.379 97.399,166.995 0,264.394 185.707,450.102 185.707,450.796 455.975,450.796 
+		455.975,420.796 	"/>
+	<path d="M259.212,5.179l187.381,187.382l-140.6,140.6L118.613,145.779L259.212,5.179z"/>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+</svg></button>
+  <button type="button" class="btn btn-primary btn-lg bottom-buttons" id="redo">Redo</button>
+  <div class = "currentColor"></div>
+  <div class = "palette-slider"> > </div>
+  <div id = "color-picker">
+    <input type="color" id="head" name="head"
+           value="#e66465">
+    <label for="head">Head</label>
+</div>
 </body>
 
 </html>
