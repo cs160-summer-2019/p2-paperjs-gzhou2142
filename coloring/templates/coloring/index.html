@@ -9,7 +9,19 @@
   <script type="text/javascript" src="{% static 'coloring/vendors/paper/paper-full.min.js' %}"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <style type="text/css">
+    #color-picker{
+      position:absolute;
+      right: 0px;
+      width: 130px;
+      bottom: 190px;
+      text-align:center;
+      font-size: 20px;
+    }
     
+    #favcolor{
+      height:50px;
+      width: 81px;
+    }
     
     .palette-slider {
       position: absolute;
@@ -456,7 +468,16 @@
         cp.history.push("white");
       });
       
+      var theInput = document.getElementById("favcolor");
+      var theColor = theInput.value;
+      theInput.addEventListener("input", function() {
+      $(".currentColor").css("background-color", theInput.value);
+      cp.history.push(theInput.value);
+      currentColor = theInput.value;
+      console.log(theInput.value);
+      }, false);
 
+    
     }
 
 
@@ -625,9 +646,11 @@
   <div class = "currentColor"></div>
   <div class = "palette-slider"> > </div>
   <div id = "color-picker">
-    <input type="color" id="head" name="head"
-           value="#e66465">
-    <label for="head">Head</label>
+      <input type="color" id="favcolor" value="#F44336">
+
+    <div class = "color-pick">
+      Color Picker
+    </div>
 </div>
 </body>
 
